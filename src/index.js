@@ -1,61 +1,26 @@
-import * as css from './style.css';
-import smoothscroll from 'smoothscroll';
+import NavigationChangeNotifier from './navigation-change-notifier';
+import ReactionScrollBar from './reaction-scroll-bar';
 
+const ISSUE_THREAD_URL_REGEX = /^https:\/\/github.com\/.*\/issues\/[0-9]+$/;
 const COMMENT_SELECTOR = 'div.js-discussion div.timeline-comment';
 const REACTION_SELECTOR = 'div.comment-reactions-options button.reaction-summary-item';
 
 
-class ReactionScrollBar {
-  constructor(commentsWithReactions) {
-    this.commentsWithReactions = commentsWithReactions;
-    const container = document.createElement('div');
-    this.container = container;
+function init() {
+  const reactionScrollBar = new ReactionScrollBar();
 
-    container.className = css.container;
-    document.body.appendChild(container);
-    window.addEventListener('resize', this.updateReactionEls.bind(this));
-    this.updateReactionEls();
+  function updateScrollBar() {
+    const commentsWithReactions = getCommentsWithReactions();
+    reactionScrollBar.setComments(commentsWithReactions);
   }
-  
-  updateReactionEls() {
-    const documentHeight = document.documentElement.offsetHeight;
-    const viewportHeight = window.innerHeight;
+  updateScrollBar();
 
-    this.commentsWithReactions.forEach(comment => {
-      let linkEl = comment.linkEl;
-      if (!linkEl) {
-        comment.linkEl = linkEl = document.createElement('button');
-
-        let topEmoji;
-        let topCount = 0;
-        const reactions = comment.reactions;
-        Object.keys(reactions).forEach(reaction => {
-          const count = reactions[reaction];
-          if (count > topCount) {
-            topEmoji = reaction;
-            topCount = count;
-          }
-        });
-
-        linkEl.textContent = `${topCount} ${topEmoji}`;
-
-        linkEl.className = css.reactionLink;
-        linkEl.tabIndex = 0;
-        linkEl.style.zIndex = topCount;
-
-        const scrollToComment = () => {
-          smoothscroll(comment.commentEl);
-        }
-
-        linkEl.addEventListener('click', scrollToComment);
-        linkEl.addEventListener('focus', scrollToComment);
-        this.container.appendChild(linkEl);
-      }
-
-      const linkPosition = (comment.commentTopPx / documentHeight) * viewportHeight;
-      linkEl.style.top = `${linkPosition}px`;
-    });
-  }
+  new NavigationChangeNotifier({
+    urlPattern: ISSUE_THREAD_URL_REGEX,
+    onNavigateToMatch: updateScrollBar,
+    onNavigateElsewhere: () => { reactionScrollBar.clearComments() },
+    loadDetectionSelector: COMMENT_SELECTOR,
+  });
 }
 
 
@@ -69,7 +34,7 @@ class ReactionScrollBar {
  *      {
  *        type: string,
  *        count: number,
- *      }
+*      }
  *    ],
  *  }
  * ]
@@ -113,14 +78,6 @@ function getElBoundingBox(comment) {
   return {
     ...comment,
     commentTopPx: bbox.top + scrollTop,
-  }
-}
-
-
-function init() {
-  const commentsWithReactions = getCommentsWithReactions();
-  if (commentsWithReactions) {
-    new ReactionScrollBar(commentsWithReactions);
   }
 }
 

@@ -104,7 +104,87 @@ parcelRequire = (function (modules, cache, entry, globalName) {
 
   // Override the current require with this new one
   return newRequire;
-})({"2iMt":[function(require,module,exports) {
+})({"401E":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+/**
+ * Polls for URL changes that either do or don't match a pattern.
+ */
+var NavigationChangeNotifier =
+/*#__PURE__*/
+function () {
+  function NavigationChangeNotifier(opts) {
+    _classCallCheck(this, NavigationChangeNotifier);
+
+    this.URL_CHANGE_POLL_MS = 250;
+    this.LOADED_POLL_MS = 250;
+    this.urlPattern = opts.urlPattern;
+    this.onNavigateToMatch = opts.onNavigateToMatch;
+    this.onNavigateElsewhere = opts.onNavigateElsewhere; // A CSS selector that we poll after a route change to the desired URL pattern to 
+    // detect when we've actually loaded the content.
+
+    this.loadDetectionSelector = opts.loadDetectionSelector;
+    this.knownLocationHref = window.location.href;
+    window.addEventListener('visibilitychange', this.onVisibilityChange.bind(this));
+    this.onVisibilityChange();
+  }
+
+  _createClass(NavigationChangeNotifier, [{
+    key: "checkUrlChanged",
+    value: function checkUrlChanged() {
+      if (window.location.href !== this.knownLocationHref) {
+        this.knownLocationHref = window.location.href;
+
+        if (window.location.href.match(this.urlPattern)) {
+          this.pollLoadedTimeout = setTimeout(this.checkContentLoaded.bind(this), this.LOADED_POLL_MS);
+        } else {
+          clearTimeout(this.pollLoadedTimeout);
+          this.onNavigateElsewhere();
+        }
+      }
+    }
+  }, {
+    key: "checkContentLoaded",
+    value: function checkContentLoaded() {
+      var testElements = document.querySelectorAll(this.loadDetectionSelector);
+
+      if (testElements.length) {
+        this.onNavigateToMatch();
+        return;
+      }
+
+      if (window.location.href.match(this.urlPattern)) {
+        this.pollLoadedTimeout = setTimeout(this.checkContentLoaded.bind(this), this.LOADED_POLL_MS);
+      }
+    }
+  }, {
+    key: "onVisibilityChange",
+    value: function onVisibilityChange() {
+      if (document.hidden) {
+        clearInterval(this.checkHrefInterval);
+      } else {
+        this.checkHrefInterval = setInterval(this.checkUrlChanged.bind(this), this.URL_CHANGE_POLL_MS);
+      }
+    }
+  }]);
+
+  return NavigationChangeNotifier;
+}();
+
+var _default = NavigationChangeNotifier;
+exports.default = _default;
+},{}],"2iMt":[function(require,module,exports) {
 module.exports = {
   "container": "_container_1etzy_1",
   "reactionLink": "_reactionLink_1etzy_11"
@@ -232,8 +312,13 @@ return smoothScroll;
 
 });
 
-},{}],"Focm":[function(require,module,exports) {
+},{}],"ll0/":[function(require,module,exports) {
 "use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
 
 var css = _interopRequireWildcard(require("./style.css"));
 
@@ -243,31 +328,18 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
 
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; var ownKeys = Object.keys(source); if (typeof Object.getOwnPropertySymbols === 'function') { ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function (sym) { return Object.getOwnPropertyDescriptor(source, sym).enumerable; })); } ownKeys.forEach(function (key) { _defineProperty(target, key, source[key]); }); } return target; }
-
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
-function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
-
-function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance"); }
-
-function _iterableToArray(iter) { if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter); }
-
-function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
-
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
-var COMMENT_SELECTOR = 'div.js-discussion div.timeline-comment';
-var REACTION_SELECTOR = 'div.comment-reactions-options button.reaction-summary-item';
-
 var ReactionScrollBar =
 /*#__PURE__*/
 function () {
-  function ReactionScrollBar(commentsWithReactions) {
+  function ReactionScrollBar() {
+    var commentsWithReactions = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
+
     _classCallCheck(this, ReactionScrollBar);
 
     this.commentsWithReactions = commentsWithReactions;
@@ -275,14 +347,37 @@ function () {
     this.container = container;
     container.className = css.container;
     document.body.appendChild(container);
-    window.addEventListener('resize', this.updateReactionEls.bind(this));
+    window.addEventListener('resize', this.updateReactionEls.bind(this), {
+      passive: true
+    });
     this.updateReactionEls();
   }
 
   _createClass(ReactionScrollBar, [{
+    key: "clearComments",
+    value: function clearComments() {
+      var _this = this;
+
+      // Remove any existing buttons
+      this.commentsWithReactions.forEach(function (comment) {
+        if (comment.linkEl) {
+          _this.container.removeChild(comment.linkEl);
+        }
+      });
+      this.commentsWithReactions = [];
+    }
+  }, {
+    key: "setComments",
+    value: function setComments() {
+      var commentsWithReactions = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
+      this.clearComments();
+      this.commentsWithReactions = commentsWithReactions;
+      this.updateReactionEls();
+    }
+  }, {
     key: "updateReactionEls",
     value: function updateReactionEls() {
-      var _this = this;
+      var _this2 = this;
 
       var documentHeight = document.documentElement.offsetHeight;
       var viewportHeight = window.innerHeight;
@@ -314,7 +409,7 @@ function () {
           linkEl.addEventListener('click', scrollToComment);
           linkEl.addEventListener('focus', scrollToComment);
 
-          _this.container.appendChild(linkEl);
+          _this2.container.appendChild(linkEl);
         }
 
         var linkPosition = comment.commentTopPx / documentHeight * viewportHeight;
@@ -325,6 +420,52 @@ function () {
 
   return ReactionScrollBar;
 }();
+
+var _default = ReactionScrollBar;
+exports.default = _default;
+},{"./style.css":"2iMt","smoothscroll":"U0cl"}],"Focm":[function(require,module,exports) {
+"use strict";
+
+var _navigationChangeNotifier = _interopRequireDefault(require("./navigation-change-notifier"));
+
+var _reactionScrollBar = _interopRequireDefault(require("./reaction-scroll-bar"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; var ownKeys = Object.keys(source); if (typeof Object.getOwnPropertySymbols === 'function') { ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function (sym) { return Object.getOwnPropertyDescriptor(source, sym).enumerable; })); } ownKeys.forEach(function (key) { _defineProperty(target, key, source[key]); }); } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
+
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance"); }
+
+function _iterableToArray(iter) { if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter); }
+
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
+
+var ISSUE_THREAD_URL_REGEX = /^https:\/\/github.com\/.*\/issues\/[0-9]+$/;
+var COMMENT_SELECTOR = 'div.js-discussion div.timeline-comment';
+var REACTION_SELECTOR = 'div.comment-reactions-options button.reaction-summary-item';
+
+function init() {
+  var reactionScrollBar = new _reactionScrollBar.default();
+
+  function updateScrollBar() {
+    var commentsWithReactions = getCommentsWithReactions();
+    reactionScrollBar.setComments(commentsWithReactions);
+  }
+
+  updateScrollBar();
+  new _navigationChangeNotifier.default({
+    urlPattern: ISSUE_THREAD_URL_REGEX,
+    onNavigateToMatch: updateScrollBar,
+    onNavigateElsewhere: function onNavigateElsewhere() {
+      reactionScrollBar.clearComments();
+    },
+    loadDetectionSelector: COMMENT_SELECTOR
+  });
+}
 /**
  * Returns an array that looks like:
  * [
@@ -335,7 +476,7 @@ function () {
  *      {
  *        type: string,
  *        count: number,
- *      }
+*      }
  *    ],
  *  }
  * ]
@@ -381,13 +522,5 @@ function getElBoundingBox(comment) {
   });
 }
 
-function init() {
-  var commentsWithReactions = getCommentsWithReactions();
-
-  if (commentsWithReactions) {
-    new ReactionScrollBar(commentsWithReactions);
-  }
-}
-
 init();
-},{"./style.css":"2iMt","smoothscroll":"U0cl"}]},{},["Focm"], null)
+},{"./navigation-change-notifier":"401E","./reaction-scroll-bar":"ll0/"}]},{},["Focm"], null)
