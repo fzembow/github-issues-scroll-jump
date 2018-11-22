@@ -4,7 +4,7 @@
   "description": "Chrome extension to easily find the most liked comments in a Github issue thread",
   "main": "index.js",
   "scripts": {
-    "build": "parcel build src/index.js -d extension/assets --no-source-maps --no-minify --out-file app"
+    "build": "parcel build src/index.js -d extension/assets --no-source-maps --no-minify --out-file app && zip -r package.zip extension"
   },
   "repository": {
     "type": "git",

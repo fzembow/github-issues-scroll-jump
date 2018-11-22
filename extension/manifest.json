@@ -3,6 +3,9 @@
   "version": "1.0",
   "description": "Easily find the most liked comments in a Github issue thread",
   "manifest_version": 2,
+  "icons": {
+    "128": "icon-128.png"
+  },
   "content_scripts": [
     {
       "matches": ["https://github.com/*"],
