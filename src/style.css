@@ -1,0 +1,21 @@
+.container {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 80px;
+  z-index: 999999;
+  pointer-events: none;
+}
+
+.reactionLink {
+  position: absolute;
+  right: 10px;
+  cursor: pointer;
+  pointer-events: all;
+}
+
+.reactionLink:hover {
+  transition: transform 0.08 ease-in-out;
+  transform: scale(1.04);
+}

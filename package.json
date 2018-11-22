@@ -1,0 +1,38 @@
+{
+  "name": "github-issues-scroll-jump",
+  "version": "1.0.0",
+  "description": "Chrome extension to easily find the most liked comments in a Github issue thread",
+  "main": "index.js",
+  "scripts": {
+    "build": "parcel build src/index.js -d extension/assets --no-source-maps --no-minify --out-file app"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fzembow/github-issues-scroll-jump.git"
+  },
+  "keywords": [
+    "github",
+    "chrome",
+    "extensions",
+    "github",
+    "issues"
+  ],
+  "author": "Fil Zembowicz <fil@filosophy.org>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/fzembow/github-issues-scroll-jump/issues"
+  },
+  "homepage": "https://github.com/fzembow/github-issues-scroll-jump#readme",
+  "devDependencies": {
+    "eslint": "^5.9.0",
+    "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-node": "^8.0.0",
+    "eslint-plugin-promise": "^4.0.1",
+    "eslint-plugin-standard": "^4.0.0",
+    "parcel-bundler": "^1.10.3",
+    "postcss-modules": "^1.4.1"
+  },
+  "dependencies": {
+    "smoothscroll": "^0.4.0"
+  }
+}
