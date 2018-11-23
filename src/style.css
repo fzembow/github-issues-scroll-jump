@@ -13,9 +13,23 @@
   right: 10px;
   cursor: pointer;
   pointer-events: all;
+  opacity: 0.8;
+  outline: none;
+  border: none;
+  border-radius: 3px;
+  transition: box-shadow 0.08 ease-in-out,
+              transform 0.08 ease-in-out,
+              opacity 0.08 ease-in-out;
 }
 
-.reactionLink:hover {
-  transition: transform 0.08 ease-in-out;
+
+.reactionLink:hover,
+.reactionLink:focus {
   transform: scale(1.04);
+  opacity: 1.0;
+  z-index: 999999 !important;
+}
+
+.reactionLink:focus {
+  box-shadow: rgb(192, 223, 255) 0px 0px 2px 4px;
 }

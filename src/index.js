@@ -1,9 +1,11 @@
 import NavigationChangeNotifier from './navigation-change-notifier';
 import ReactionScrollBar from './reaction-scroll-bar';
 
-const ISSUE_THREAD_URL_REGEX = /^https:\/\/github.com\/.*\/issues\/[0-9]+$/;
+const ISSUE_THREAD_URL_REGEX = /^https:\/\/github.com\/.*\/issues\/[0-9]+/;
 const COMMENT_SELECTOR = 'div.js-discussion div.timeline-comment';
 const REACTION_SELECTOR = 'div.comment-reactions-options button.reaction-summary-item';
+
+const TOP_N_COMMENTS_SHOWN = 10;
 
 
 function init() {
@@ -48,7 +50,12 @@ function getCommentsWithReactions() {
   return commentEls
     .map(getReactionsForComment)
     .filter(res => res)
-    .map(getElBoundingBox);
+    // Get the top N
+    .sort((a, b) => (b.reactionCount - a.reactionCount))
+    .slice(0, TOP_N_COMMENTS_SHOWN)
+    // Sort them back into flow order so tab works correctly.
+    .map(getElBoundingBox)
+    .sort((a, b) => (a.commentTopPx - b.commentTopPx));
 }
 
 
@@ -59,14 +66,17 @@ function getReactionsForComment(commentEl) {
   }
 
   const reactions = {};
+  let reactionCount = 0;
   reactionsButtonEls.forEach(buttonEl => {
     const emoji = buttonEl.querySelector('.emoji').textContent.trim();
     const count = parseInt(buttonEl.textContent.replace(emoji, '').trim());
     reactions[emoji] = count;
+    reactionCount += count;
   });
   
   return {
     commentEl: commentEl,
+    reactionCount,
     reactions,
   };
 }

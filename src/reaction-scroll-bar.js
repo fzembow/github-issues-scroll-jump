@@ -29,6 +29,19 @@ class ReactionScrollBar {
     this.commentsWithReactions = commentsWithReactions;
     this.updateReactionEls();
   }
+
+  scrollToComment (comment, alwaysScroll) {
+    return () => {
+      if (comment.active && !alwaysScroll) {
+        return;
+      }
+      this.commentsWithReactions.forEach(comment => {
+        comment.active = false;
+      });
+      smoothscroll(comment.commentEl);
+      comment.active = true;
+    }
+  }
   
   updateReactionEls() {
     const documentHeight = document.documentElement.offsetHeight;
@@ -56,12 +69,8 @@ class ReactionScrollBar {
         linkEl.tabIndex = 0;
         linkEl.style.zIndex = topCount;
 
-        const scrollToComment = () => {
-          smoothscroll(comment.commentEl);
-        }
-
-        linkEl.addEventListener('click', scrollToComment);
-        linkEl.addEventListener('focus', scrollToComment);
+        linkEl.addEventListener('click', this.scrollToComment(comment, true));
+        linkEl.addEventListener('focus', this.scrollToComment(comment));
         this.container.appendChild(linkEl);
       }
 

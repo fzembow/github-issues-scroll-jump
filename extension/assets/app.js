@@ -186,8 +186,8 @@ var _default = NavigationChangeNotifier;
 exports.default = _default;
 },{}],"2iMt":[function(require,module,exports) {
 module.exports = {
-  "container": "_container_1etzy_1",
-  "reactionLink": "_reactionLink_1etzy_11"
+  "container": "_container_11wsx_1",
+  "reactionLink": "_reactionLink_11wsx_11"
 };
 },{}],"U0cl":[function(require,module,exports) {
 var define;
@@ -375,9 +375,27 @@ function () {
       this.updateReactionEls();
     }
   }, {
+    key: "scrollToComment",
+    value: function scrollToComment(comment, alwaysScroll) {
+      var _this2 = this;
+
+      return function () {
+        if (comment.active && !alwaysScroll) {
+          return;
+        }
+
+        _this2.commentsWithReactions.forEach(function (comment) {
+          comment.active = false;
+        });
+
+        (0, _smoothscroll.default)(comment.commentEl);
+        comment.active = true;
+      };
+    }
+  }, {
     key: "updateReactionEls",
     value: function updateReactionEls() {
-      var _this2 = this;
+      var _this3 = this;
 
       var documentHeight = document.documentElement.offsetHeight;
       var viewportHeight = window.innerHeight;
@@ -401,15 +419,10 @@ function () {
           linkEl.className = css.reactionLink;
           linkEl.tabIndex = 0;
           linkEl.style.zIndex = topCount;
+          linkEl.addEventListener('click', _this3.scrollToComment(comment, true));
+          linkEl.addEventListener('focus', _this3.scrollToComment(comment));
 
-          var scrollToComment = function scrollToComment() {
-            (0, _smoothscroll.default)(comment.commentEl);
-          };
-
-          linkEl.addEventListener('click', scrollToComment);
-          linkEl.addEventListener('focus', scrollToComment);
-
-          _this2.container.appendChild(linkEl);
+          _this3.container.appendChild(linkEl);
         }
 
         var linkPosition = comment.commentTopPx / documentHeight * viewportHeight;
@@ -444,9 +457,10 @@ function _iterableToArray(iter) { if (Symbol.iterator in Object(iter) || Object.
 
 function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
 
-var ISSUE_THREAD_URL_REGEX = /^https:\/\/github.com\/.*\/issues\/[0-9]+$/;
+var ISSUE_THREAD_URL_REGEX = /^https:\/\/github.com\/.*\/issues\/[0-9]+/;
 var COMMENT_SELECTOR = 'div.js-discussion div.timeline-comment';
 var REACTION_SELECTOR = 'div.comment-reactions-options button.reaction-summary-item';
+var TOP_N_COMMENTS_SHOWN = 10;
 
 function init() {
   var reactionScrollBar = new _reactionScrollBar.default();
@@ -492,7 +506,13 @@ function getCommentsWithReactions() {
 
   return commentEls.map(getReactionsForComment).filter(function (res) {
     return res;
-  }).map(getElBoundingBox);
+  }) // Get the top N
+  .sort(function (a, b) {
+    return b.reactionCount - a.reactionCount;
+  }).slice(0, TOP_N_COMMENTS_SHOWN) // Sort them back into flow order so tab works correctly.
+  .map(getElBoundingBox).sort(function (a, b) {
+    return a.commentTopPx - b.commentTopPx;
+  });
 }
 
 function getReactionsForComment(commentEl) {
@@ -503,13 +523,16 @@ function getReactionsForComment(commentEl) {
   }
 
   var reactions = {};
+  var reactionCount = 0;
   reactionsButtonEls.forEach(function (buttonEl) {
     var emoji = buttonEl.querySelector('.emoji').textContent.trim();
     var count = parseInt(buttonEl.textContent.replace(emoji, '').trim());
     reactions[emoji] = count;
+    reactionCount += count;
   });
   return {
     commentEl: commentEl,
+    reactionCount: reactionCount,
     reactions: reactions
   };
 }

@@ -1,6 +1,6 @@
 {
   "name": "github-issues-scroll-jump",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Chrome extension to easily find the most liked comments in a Github issue thread",
   "main": "index.js",
   "scripts": {

@@ -1,4 +1,4 @@
-._container_1etzy_1 {
+._container_11wsx_1 {
   position: fixed;
   top: 0;
   right: 0;
@@ -8,14 +8,28 @@
   pointer-events: none;
 }
 
-._reactionLink_1etzy_11 {
+._reactionLink_11wsx_11 {
   position: absolute;
   right: 10px;
   cursor: pointer;
   pointer-events: all;
+  opacity: 0.8;
+  outline: none;
+  border: none;
+  border-radius: 3px;
+  transition: box-shadow 0.08 ease-in-out,
+              transform 0.08 ease-in-out,
+              opacity 0.08 ease-in-out;
 }
 
-._reactionLink_1etzy_11:hover {
-  transition: transform 0.08 ease-in-out;
+
+._reactionLink_11wsx_11:hover,
+._reactionLink_11wsx_11:focus {
   transform: scale(1.04);
+  opacity: 1.0;
+  z-index: 999999 !important;
+}
+
+._reactionLink_11wsx_11:focus {
+  box-shadow: rgb(192, 223, 255) 0px 0px 2px 4px;
 }
