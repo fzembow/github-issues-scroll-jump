@@ -1,6 +1,6 @@
 {
   "name": "Github issues scroll jump",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Easily find the most liked comments in a Github issue thread",
   "manifest_version": 2,
   "icons": {

@@ -4,7 +4,7 @@ It's annoying to have to scroll through dozens of comments in a github issue thr
 
 This is a chrome extension that annotates the scroll bar with the top comments in a github issue thread, allowing you to click or tab between them. It's like skip links for screen readers: you can go straight to the content rather than having to go past a lot of unrelated information.
 
-![screenshot of scrollbar](extension/screenshot.png)
+![screenshot of scrollbar](screenshot.png)
 
 ## Installation
 
